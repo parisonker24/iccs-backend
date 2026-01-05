@@ -1,0 +1,13 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:7
+    container_name: iccs-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - iccs_redis_data:/data
+
+volumes:
+  iccs_redis_data:

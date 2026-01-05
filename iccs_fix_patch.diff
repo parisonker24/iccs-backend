@@ -1,0 +1,58 @@
+*** Begin Patch
+*** Update File: app/services/embedding_service.py
+@@
+-import os
+-import asyncio
+-from openai import OpenAI
+-import numpy as np
+-
+-# Prefer sklearn's implementation when available, but provide a lightweight
+-# numpy-based fallback so tests and imports don't fail in minimal envs.
+-try:
+-    from sklearn.metrics.pairwise import cosine_similarity  # type: ignore
+-except Exception:
+-    def cosine_similarity(a, b):
+-        """Compute cosine similarity between 2D arrays `a` and `b`.
+-
+-        This mimics sklearn.metrics.pairwise.cosine_similarity for the
+-        small usage in this project (pairwise between two vectors).
+-        """
+-        a_arr = np.asarray(a, dtype=float)
+-        b_arr = np.asarray(b, dtype=float)
+-        # normalize rows
+-        def _norm_rows(x):
+-            norms = np.linalg.norm(x, axis=1, keepdims=True)
+-            norms[norms == 0] = 1.0
+-            return x / norms
+-
+-        a_n = _norm_rows(a_arr)
+-        b_n = _norm_rows(b_arr)
+-        return np.dot(a_n, b_n.T)
++import os
++import asyncio
++from openai import OpenAI
++import numpy as np
++
++# Prefer sklearn's implementation when available, but provide a lightweight
++# numpy-based fallback so tests and imports don't fail in minimal envs.
++try:
++    from sklearn.metrics.pairwise import cosine_similarity  # type: ignore
++except Exception:
++    def cosine_similarity(a, b):
++        """Compute cosine similarity between 2D arrays `a` and `b`.
++
++        This mimics sklearn.metrics.pairwise.cosine_similarity for the
++        small usage in this project (pairwise between two vectors).
++        """
++        a_arr = np.asarray(a, dtype=float)
++        b_arr = np.asarray(b, dtype=float)
++        # normalize rows
++        def _norm_rows(x):
++            norms = np.linalg.norm(x, axis=1, keepdims=True)
++            norms[norms == 0] = 1.0
++            return x / norms
++
++        a_n = _norm_rows(a_arr)
++        b_n = _norm_rows(b_arr)
++        return np.dot(a_n, b_n.T)
+*** End Patch
